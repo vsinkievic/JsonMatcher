@@ -16,9 +16,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<scm>
-		<developerConnection>scm:git:https://github.com/vsinkievic/JsonMatcher.git</developerConnection>
+		<developerConnection>scm:git:git@github.com:vsinkievic/JsonMatcher.git</developerConnection>
 		<tag>smart-1.6.16-SNAPSHOT</tag>
-		<url>scm:git:https://github.com/vsinkievic/JsonMatcher.git</url>
+		<url>scm:git:git@github.com:vsinkievic/JsonMatcher.git</url>
 	</scm>
 	<distributionManagement>
 		<repository>
