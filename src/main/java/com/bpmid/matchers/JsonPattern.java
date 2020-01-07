@@ -12,6 +12,7 @@ public class JsonPattern {
 	private HashMap<String, PropertyDescription> properties = new HashMap<String, PropertyDescription>();
 	private JsonPatternCompareMode compareMode;
 	private String diffDescription;
+	private boolean isDebugEnabled = false;
 	
 	public JsonPattern() {
 		this.compareMode = JsonPatternCompareMode.STRICT;
@@ -20,6 +21,11 @@ public class JsonPattern {
 		this.compareMode = compareMode;
 	}
 
+	public JsonPattern enableDebugLogging() {
+		this.isDebugEnabled = true;
+		return this;
+	}
+	
 	public JsonPattern addMandatoryProperty(String name, String value) {
 		properties.put(name, new PropertyDescription(PropertyConstraint.MANDATORY, value));
 		return this;
@@ -109,37 +115,71 @@ public class JsonPattern {
 
 	
 	private boolean _allPresentedFieldsHasValuesAsExpected(JsonNode actualJson) {
+		if (isDebugEnabled)
+			System.out.println("Checking if all presented fields has values as expected:");
 		Iterator<Entry<String, JsonNode>> i = actualJson.fields();
 		while(i.hasNext()) {
 			Entry<String, JsonNode> entry = i.next();
+			if (isDebugEnabled)
+				System.out.print(String.format("  %s : ",  entry.getKey()));
+			
 			if (properties.containsKey(entry.getKey())) {
 				PropertyDescription p = properties.get(entry.getKey());
 				if (!p.checkValue(entry.getValue().asText())) {
+					if (isDebugEnabled)
+						System.out.println(String.format("%s -> ERROR (wrong value)", entry.getValue().asText()));
+					
 					diffDescription = String.format("Value of field '%s' does not match what expected", entry.getKey());
 					return false;
+				} else {
+					if (isDebugEnabled)
+						System.out.println(String.format("%s -> OK", entry.getValue().asText()));
 				}
 			} else {
 				if (!compareMode.equals(JsonPatternCompareMode.ADDITIONAL_FIELDS_ALLOWED)) {
+					if (isDebugEnabled)
+						System.out.println("ERROR (field is not expected)");
+					
 					diffDescription = String.format("Field '%s' is not expected!", entry.getKey());
 					return false;
+				} else {
+					if (isDebugEnabled)
+						System.out.println(String.format("%s -> OK (skipped)", entry.getValue().asText()));
 				}
 			}
 		}
+		if (isDebugEnabled)
+			System.out.println("All presented fields are OK");
 		return true;
 	}
 
 	private boolean _allMandatoryFieldsPresentedIn(JsonNode actualJson) {
 		
+		if (isDebugEnabled)
+			System.out.println("Checking if all mandatoryFieldsPresented");
 		for (String fieldName : this.properties.keySet()) {
+			if (isDebugEnabled)
+				System.out.print(String.format("  %s : ",  fieldName));
+			
 			PropertyDescription p = properties.get(fieldName);
-			if (p.isOptional())
+			if (p.isOptional()) {
+				if (isDebugEnabled)
+					System.out.println("optional, skiping");
 				continue;
+			}
 			JsonNode value = actualJson.get(fieldName);
 			if (value == null) {
+				if (isDebugEnabled)
+					System.out.println("NOT FOUND, ERROR!");
 				this.diffDescription = String.format("MANDATORY field '%s' not found in actual JSON", fieldName);
 				return false;
+			} else {
+				if (isDebugEnabled)
+					System.out.println("FOUND, OK");
 			}
 		}
+		if (isDebugEnabled)
+			System.out.println("All mandatory Fields Presented");
 		
 		return true;
 	}
