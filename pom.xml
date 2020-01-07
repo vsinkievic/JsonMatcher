@@ -16,7 +16,7 @@
 	</properties>
 	<scm>
 		<developerConnection>scm:git:git@github.com:vsinkievic/JsonMatcher.git</developerConnection>
-		<tag>smart-1.6.16-SNAPSHOT</tag>
+		<tag>JsonMatcher-0.0.2-SNAPSHOT</tag>
 		<url>scm:git:git@github.com:vsinkievic/JsonMatcher.git</url>
 	</scm>
 	<distributionManagement>
