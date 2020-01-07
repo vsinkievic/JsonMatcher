@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.bpmid</groupId>
 	<artifactId>JsonMatcher</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>JsonMatcher</name>
 	<description>JSON string matcher</description>
 	<properties>
@@ -17,7 +16,7 @@
 	</properties>
 	<scm>
 		<developerConnection>scm:git:git@github.com:vsinkievic/JsonMatcher.git</developerConnection>
-		<tag>smart-1.6.16-SNAPSHOT</tag>
+		<tag>JsonMatcher-0.0.1</tag>
 		<url>scm:git:git@github.com:vsinkievic/JsonMatcher.git</url>
 	</scm>
 	<distributionManagement>
