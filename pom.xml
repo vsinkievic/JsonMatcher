@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.bpmid</groupId>
+	<artifactId>JsonMatcher</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>JsonMatcher</name>
+	<description>JSON string matcher</description>
+	<properties>
+	    <hamcrest.version>1.3</hamcrest.version>
+		<junit.version>4.11</junit.version>
+		<java.version>1.8</java.version>
+		<jackson.version>2.5.1</jackson.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<scm>
+		<developerConnection>scm:git:https://github.com/vsinkievic/JsonMatcher.git</developerConnection>
+		<tag>smart-1.6.16-SNAPSHOT</tag>
+		<url>scm:git:https://github.com/vsinkievic/JsonMatcher.git</url>
+	</scm>
+	<distributionManagement>
+		<repository>
+			<id>mbuilder.sinkievic.lt</id>
+			<name>mbuilder.sinkievic.lt-releases</name>
+			<url>http://192.168.11.5:8081/artifactory/BPMID-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>mbuilder.sinkievic.lt</id>
+			<name>mbuilder.sinkievic.lt-snapshots</name>
+			<url>http://192.168.11.5:8081/artifactory/BPMID-dev</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<dependencies>
+			<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<version>${hamcrest.version}</version>
+		</dependency>
+	
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.hamcrest</groupId> -->
+<!-- 			<artifactId>hamcrest-all</artifactId> -->
+<!-- 			<version>${hamcrest.version}</version> -->
+<!-- 			<scope>test</scope> -->
+<!-- 		</dependency> -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hamcrest</groupId>
+					<artifactId>hamcrest-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+	</dependencies>
+</project>
