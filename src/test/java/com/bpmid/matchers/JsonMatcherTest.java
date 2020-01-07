@@ -3,6 +3,8 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.*;
 
+import java.math.BigDecimal;
+
 import org.hamcrest.Matchers;
 
 import static com.bpmid.matchers.JsonMatcher.matchesJson;
@@ -33,12 +35,15 @@ public class JsonMatcherTest {
 	@Test
 	public void testMandatoryFieldsExistsWithSameValues() {
 		// given
-		String json = "{ \"field1\": \"value1\", \"field2\":\"value2\", \"field3\": \"value3\" }";
+		String json = "{ \"field1\": \"value1\", \"field2\":\"value2\", \"field3\": \"value3\", \"field4\":true, \"field5\":12, \"field6\": 9.99 }";
 		
 		// then
 		assertThat(json, matchesJson(new JsonPattern().addMandatoryProperty("field1", "value1")
 				                                      .addMandatoryProperty("field2", "value2")
-				                                      .addMandatoryProperty("field3", "value3")));
+				                                      .addMandatoryProperty("field3", "value3")
+				                                      .addMandatoryProperty("field4", true)
+				                                      .addMandatoryProperty("field5", 12)
+				                                      .addMandatoryProperty("field6", new BigDecimal("9.99"))));
 	}
 
 	@Test

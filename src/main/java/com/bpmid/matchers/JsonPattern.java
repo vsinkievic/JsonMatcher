@@ -1,5 +1,6 @@
 package com.bpmid.matchers;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -36,6 +37,36 @@ public class JsonPattern {
 		return this;
 	}
 
+	public JsonPattern addMandatoryProperty(String name, Boolean value) {
+		properties.put(name, new PropertyDescription(PropertyConstraint.MANDATORY, value));
+		return this;
+	}
+
+	public JsonPattern addOptionalProperty(String name, Boolean value) {
+		properties.put(name, new PropertyDescription(PropertyConstraint.OPTIONAL, value));
+		return this;
+	}
+
+	public JsonPattern addMandatoryProperty(String name, BigDecimal value) {
+		properties.put(name, new PropertyDescription(PropertyConstraint.MANDATORY, value));
+		return this;
+	}
+
+	public JsonPattern addOptionalProperty(String name, BigDecimal value) {
+		properties.put(name, new PropertyDescription(PropertyConstraint.OPTIONAL, value));
+		return this;
+	}
+
+	public JsonPattern addMandatoryProperty(String name, Integer value) {
+		properties.put(name, new PropertyDescription(PropertyConstraint.MANDATORY, value));
+		return this;
+	}
+
+	public JsonPattern addOptionalProperty(String name, Integer value) {
+		properties.put(name, new PropertyDescription(PropertyConstraint.OPTIONAL, value));
+		return this;
+	}
+
 	public JsonPattern addMandatoryProperty(String name, Matcher<String> matcher) {
 		properties.put(name,  new PropertyDescription(PropertyConstraint.MANDATORY, matcher));
 		return this;
@@ -48,33 +79,84 @@ public class JsonPattern {
 	private class PropertyDescription {
 		private PropertyConstraint constraint;
 		private Matcher<String> valueMatcher;
-		private String expectedValue;
+		private ValueType valueType;
+		private String expectedString;
+		private Boolean expectedBool;
+		private Integer expectedInt;
+		private BigDecimal expectedDecimal;
 		
 		PropertyDescription (PropertyConstraint constraint, String value) {
 			this.constraint = constraint;
-			this.expectedValue = value;
+			this.valueType = ValueType.STRING;
+			this.expectedString = value;
 		}
-
+		
+		PropertyDescription (PropertyConstraint constraint, Boolean value) {
+			this.constraint = constraint;
+			this.valueType = ValueType.BOOLEAN;
+			this.expectedBool = value;
+		}
+		
+		PropertyDescription (PropertyConstraint constraint, Integer value) {
+			this.constraint = constraint;
+			this.valueType = ValueType.INTEGER;
+			this.expectedInt = value;
+		}
+		
+		PropertyDescription (PropertyConstraint constraint, BigDecimal value) {
+			this.constraint = constraint;
+			this.valueType = ValueType.BIGDECIMAL;
+			this.expectedDecimal = value;
+		}
 
 		public PropertyDescription(PropertyConstraint constraint, Matcher<String> valueMatcher) {
 			this.constraint = constraint;
+			this.valueType = ValueType.MATCHER;
 			this.valueMatcher = valueMatcher;
 		}
 
-		public boolean checkValue(String value) {
-			if (value == null) {
-				return (expectedValue == null);
-			} else {
-				if (valueMatcher != null)
-					return valueMatcher.matches(value);
+		public boolean checkValue(JsonNode valueNode) {
+			
+			if (valueType.equals(ValueType.MATCHER)) {
+				return valueMatcher.matches(valueNode.asText());
+			} else if (valueType.equals(ValueType.STRING)){
+				if (valueNode.isNull()) 
+					return (expectedString == null);
 				else {
-					if (expectedValue == null)
+					if (expectedString == null)
 						return false;
 					else 
-						return expectedValue.equals(value);
+						return expectedString.equals(valueNode.asText());
 				}
-					
-			}
+			} else if (valueType.equals(ValueType.BOOLEAN)) {
+				if (valueNode.isNull()) 
+					return (expectedBool == null);
+				else {
+					if (expectedBool == null)
+						return false;
+					else 
+						return expectedBool.equals(valueNode.asBoolean());
+				}
+			} else if (valueType.equals(ValueType.INTEGER)) {
+				if (valueNode.isNull()) 
+					return (expectedBool == null);
+				else {
+					if (expectedInt == null)
+						return false;
+					else 
+						return expectedInt.equals(valueNode.asInt());
+				}
+			} else if (valueType.equals(ValueType.BIGDECIMAL)) {
+				if (valueNode.isNull()) 
+					return (expectedBool == null);
+				else {
+					if (expectedDecimal == null)
+						return false;
+					else 
+						return expectedDecimal.equals(valueNode.decimalValue());
+				}
+			} else 
+				return false;
 			
 		}
 
@@ -89,12 +171,19 @@ public class JsonPattern {
 		MANDATORY,
 		OPTIONAL
 	}
+	private enum ValueType {
+		STRING,
+		BOOLEAN,
+		INTEGER,
+		BIGDECIMAL,
+		MATCHER
+	}
 	public String toDescription() {
 		StringBuilder sb = new StringBuilder("\n{\n");
 		for (String fieldName : this.properties.keySet()) {
 			PropertyDescription p = properties.get(fieldName);
 			if (p.valueMatcher == null)
-				sb.append(String.format("  %s (%s) : %s\n", fieldName, p.constraint, p.expectedValue));
+				sb.append(String.format("  %s (%s) : %s\n", fieldName, p.constraint, p.expectedString));
 			else 
 				sb.append(String.format("  %s (%s) : %s\n", fieldName, p.constraint, p.valueMatcher.toString()));
 		}
@@ -125,7 +214,7 @@ public class JsonPattern {
 			
 			if (properties.containsKey(entry.getKey())) {
 				PropertyDescription p = properties.get(entry.getKey());
-				if (!p.checkValue(entry.getValue().asText())) {
+				if (!p.checkValue(entry.getValue())) {
 					if (isDebugEnabled)
 						System.out.println(String.format("%s -> ERROR (wrong value)", entry.getValue().asText()));
 					
