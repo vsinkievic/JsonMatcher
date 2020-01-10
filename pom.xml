@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.bpmid</groupId>
 	<artifactId>JsonMatcher</artifactId>
-	<version>0.0.4</version>
+	<version>0.0.5-SNAPSHOT</version>
 	<name>JsonMatcher</name>
 	<description>JSON string matcher</description>
 	<properties>
@@ -16,7 +16,7 @@
 	</properties>
 	<scm>
 		<developerConnection>scm:git:git@github.com:vsinkievic/JsonMatcher.git</developerConnection>
-		<tag>JsonMatcher-0.0.4</tag>
+		<tag>JsonMatcher-0.0.2-SNAPSHOT</tag>
 		<url>scm:git:git@github.com:vsinkievic/JsonMatcher.git</url>
 	</scm>
 	<distributionManagement>
