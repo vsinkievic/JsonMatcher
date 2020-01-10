@@ -231,13 +231,13 @@ public class JsonPattern {
 				PropertyDescription p = properties.get(entry.getKey());
 				if (!p.checkValue(entry.getValue())) {
 					if (isDebugEnabled)
-						System.out.println(String.format("'%s' -> ERROR (wrong value, expected '%s')", entry.getValue().asText(), p.getExpectedValueAsText()));
+						System.out.println(String.format("ERROR : '%s' != (expected) '%s'", entry.getValue().asText(), p.getExpectedValueAsText()));
 					
-					diffDescription = String.format("Value of field '%s' does not match what expected", entry.getKey());
+					diffDescription = String.format("Value of field '%s' does not match expected '%s'", entry.getKey(), p.getExpectedValueAsText());
 					return false;
 				} else {
 					if (isDebugEnabled)
-						System.out.println(String.format("'%s' -> OK (%s)", entry.getValue().asText(), p.getExpectedValueAsText()));
+						System.out.println(String.format("OK : '%s' = '%s'", entry.getValue().asText(), p.getExpectedValueAsText()));
 				}
 			} else {
 				if (!compareMode.equals(JsonPatternCompareMode.ADDITIONAL_FIELDS_ALLOWED)) {
@@ -248,7 +248,7 @@ public class JsonPattern {
 					return false;
 				} else {
 					if (isDebugEnabled)
-						System.out.println(String.format("%s -> OK (skipped)", entry.getValue().asText()));
+						System.out.println(String.format("OK, skipped, value='%s'", entry.getValue().asText()));
 				}
 			}
 		}
