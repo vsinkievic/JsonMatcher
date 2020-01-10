@@ -165,13 +165,28 @@ public class JsonPattern {
 				return true;
 			else return false;
 		}
+
+		public String getExpectedValueAsText() {
+			if (valueType.equals(ValueType.MATCHER)) {
+				return valueMatcher == null ? "null" : valueMatcher.toString();
+			} else if (valueType.equals(ValueType.STRING)){
+				return expectedString == null ? "null" : expectedString;
+			} else if (valueType.equals(ValueType.BOOLEAN)) {
+				return Boolean.toString(expectedBool);
+			} else if (valueType.equals(ValueType.INTEGER)) {
+				return Integer.toString(expectedInt);
+			} else if (valueType.equals(ValueType.BIGDECIMAL)) {
+				return expectedDecimal == null ? "null" : expectedDecimal.toString();
+			} else 
+				throw new RuntimeException(String.format("Not supported valueType=%s", valueType.toString()));
+		}
 	}
 	
 	private enum PropertyConstraint {
 		MANDATORY,
 		OPTIONAL
 	}
-	private enum ValueType {
+	enum ValueType {
 		STRING,
 		BOOLEAN,
 		INTEGER,
@@ -205,7 +220,7 @@ public class JsonPattern {
 	
 	private boolean _allPresentedFieldsHasValuesAsExpected(JsonNode actualJson) {
 		if (isDebugEnabled)
-			System.out.println("Checking if all presented fields has values as expected:");
+			System.out.println("Checking if all presented fields have values as expected:");
 		Iterator<Entry<String, JsonNode>> i = actualJson.fields();
 		while(i.hasNext()) {
 			Entry<String, JsonNode> entry = i.next();
@@ -216,18 +231,18 @@ public class JsonPattern {
 				PropertyDescription p = properties.get(entry.getKey());
 				if (!p.checkValue(entry.getValue())) {
 					if (isDebugEnabled)
-						System.out.println(String.format("%s -> ERROR (wrong value)", entry.getValue().asText()));
+						System.out.println(String.format("'%s' -> ERROR (wrong value, expected '%s')", entry.getValue().asText(), p.getExpectedValueAsText()));
 					
 					diffDescription = String.format("Value of field '%s' does not match what expected", entry.getKey());
 					return false;
 				} else {
 					if (isDebugEnabled)
-						System.out.println(String.format("%s -> OK", entry.getValue().asText()));
+						System.out.println(String.format("'%s' -> OK (%s)", entry.getValue().asText(), p.getExpectedValueAsText()));
 				}
 			} else {
 				if (!compareMode.equals(JsonPatternCompareMode.ADDITIONAL_FIELDS_ALLOWED)) {
 					if (isDebugEnabled)
-						System.out.println("ERROR (field is not expected)");
+						System.out.println(String.format("ERROR, field is not expected, value='%s'", entry.getValue().asText()));
 					
 					diffDescription = String.format("Field '%s' is not expected!", entry.getKey());
 					return false;
