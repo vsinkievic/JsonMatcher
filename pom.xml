@@ -9,7 +9,7 @@
 	    <hamcrest.version>1.3</hamcrest.version>
 		<junit.version>4.11</junit.version>
 		<java.version>1.8</java.version>
-		<jackson.version>2.10.2</jackson.version>
+		<jackson.version>2.12.1</jackson.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
